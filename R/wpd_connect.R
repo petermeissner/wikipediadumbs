@@ -8,6 +8,7 @@
 wpd_connect <-
   function(){
     RPostgreSQL::dbConnect(
+      drv      = RPostgreSQL::PostgreSQL(),
       dbname   = "wikipediatrend",
       host     = "wikipediatrend.cxlf5dhif8nw.eu-central-1.rds.amazonaws.com",
       port     = 5432,
