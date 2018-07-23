@@ -19,6 +19,7 @@ wpd_push_item <-
     # handle connection
     if ( is.null(con) ) {
       con <- wpd_connect()
+      on.exit(DBI::dbDisconnect(con))
     }
 
     # parse dates
@@ -29,8 +30,8 @@ wpd_push_item <-
     # generate sql statement
     sql <-
       paste0(
-        "INSERT INTO ", lang," (page_name, date, views)
-    VALUES ", paste0("(", paste0("'", page, "'", ",","'", date, "',", views, collapse="),\n("), ") "),
+        "INSERT INTO ", table_name," (page_name, date, views)
+    VALUES ", paste0("(", paste0("'", page, "'", ",","'", date, "',", views, collapse="),\n("), ") \n"),
     "ON CONFLICT (page_name, date) DO UPDATE SET views = EXCLUDED.views;")
 
     # execute statement
