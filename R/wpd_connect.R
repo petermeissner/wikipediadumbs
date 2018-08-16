@@ -9,8 +9,8 @@ wpd_connect <-
   function(){
     RPostgreSQL::dbConnect(
       drv      = RPostgreSQL::PostgreSQL(),
-      dbname   = "wikipediatrend",
-      host     = "wikipediatrend.cxlf5dhif8nw.eu-central-1.rds.amazonaws.com",
+      dbname   = "wikipedia",
+      host     = "petermeissner.de",
       port     = 5432,
       user     = Sys.getenv("wpd_user"),
       password = Sys.getenv("wpd_password")
