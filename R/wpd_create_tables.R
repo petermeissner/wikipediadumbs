@@ -1,4 +1,11 @@
-qpd_create_tables <-
+#' wpd_create_tables
+#'
+#' @param flatten flatten query results
+#' @param verbose be talkative?
+#'
+#' @export
+#'
+wpd_create_tables <-
   function(flatten = TRUE, verbose = TRUE){
 
     # handle connection
