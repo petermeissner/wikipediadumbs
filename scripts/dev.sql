@@ -1,44 +1,38 @@
 with
 page_view_data AS
 	(
-		SELECT
-		  tmp_tab.page_name,
-		  'cs' AS page_language,
+		select
+		  tmp_tab.page_name, '", page_language,"' as page_language,
 		  page_id,
 		  page_view_date,
 		  page_view_count
-		  FROM
-			(SELECT * FROM
+		from
+			(select * from
 				(
-					VALUES  ('!',2, '2018-01-01'),  ('!!!',3, '2018-01-01'),  ('!!!_(chk_chk_chk)',4, '2018-01-01') , ('petermeissner', 4, '2018-01-01')
-				) AS page_names
-			) AS tmp_tab (page_name, page_view_count, page_view_date)
-			left join dict_cs on tmp_tab.page_name = dict_cs.page_name
+					VALUES  ", sql_values, "
+				) as page_names
+			) as tmp_tab (page_name, page_view_count, page_view_date)
+			left join ", dict_table_name," on tmp_tab.page_name = ", dict_table_name,".page_name
 	),
-page_view_with_id_insert AS
+page_view_with_id_insert as
 	(
-	 	insert into page_views_cs
+	 	insert into ", page_views_table_name,"
 		(
-			SELECT page_id, page_view_date::date, page_view_count
-			FROM page_view_data
-			WHERE page_id is NOT NULL
+			select page_id, page_view_date::date, page_view_count
+			from page_view_data
+			where page_id is not null
 		)
-		returning *
-	),
-page_view_without_id_dump_insert AS
-	(
-		 insert into page_views_dump
-		 	(page_name, page_language, page_view_date, page_view_count)
-				(
-					SELECT page_name, page_language, page_view_date::date, page_view_count
-					FROM page_view_data
-					WHERE page_id is null
-				)
-		returning *
 	)
-SELECT false AS page_id_valid, count(*) AS count
-  FROM page_view_without_id_dump_insert
-  UNION
-  SELECT true  AS page_id_valid, count(*) AS count
-    FROM page_view_with_id_insert
+insert into page_views_traffic
+	(page_language, traffic_date, traffic_count, page_views_count)
+	(
+		select
+		  '", page_language,"' as page_language,
+		  page_view_date::date as traffic_date,
+		  count(page_name) as traffic_count,
+		  count(page_id) as page_views_count
+		from page_view_data
+		group by traffic_date
+	)
 ;
+

@@ -54,13 +54,14 @@ wpd_create_tables <-
     sql <-
       append(
         sql,
-        "CREATE TABLE IF NOT EXISTS page_views_dump (
-          page_name TEXT,
-          page_language TEXT,
-          page_view_date DATE,
-          page_view_count INTEGER
-        );"
-      )
+        "CREATE TABLE IF NOT EXISTS page_views_traffic (
+          	page_language TEXT,
+          	traffic_date DATE,
+          	page_views_count INTEGER,
+          	traffic_count INTEGER
+        )
+      ;"
+    )
 
     # execute query
     sql_res <-
