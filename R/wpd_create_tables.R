@@ -14,36 +14,58 @@ wpd_create_tables <-
 
 
     # generate query
-    sql1 <-
-      paste0(
-        "CREATE TABLE IF NOT EXISTS dict_", wpd_languages," (
-            page_id SERIAL PRIMARY KEY,
-            page_name TEXT UNIQUE NOT NULL
-          );"
-      )
+    sql <- character(0)
 
-    sql2 <-
-      paste0(
-        "CREATE TABLE IF NOT EXISTS dict_source_", wpd_languages," (
-              page_id INTEGER REFERENCES dict_", wpd_languages,"(page_id),
-              page_name_date DATE,
-              PRIMARY KEY(page_id, page_name_date)
+    sql <-
+      append(
+        sql,
+        paste0(
+          "CREATE TABLE IF NOT EXISTS dict_", wpd_languages," (
+              page_id SERIAL PRIMARY KEY,
+              page_name TEXT UNIQUE NOT NULL
             );"
+        )
       )
 
-    sql3 <-
-      paste0(
-        "CREATE TABLE IF NOT EXISTS page_views_", wpd_languages," (
+    sql <-
+      append(
+        sql,
+        paste0(
+          "CREATE TABLE IF NOT EXISTS dict_source_", wpd_languages," (
+                page_id INTEGER REFERENCES dict_", wpd_languages,"(page_id),
+                page_name_date DATE,
+                PRIMARY KEY(page_id, page_name_date)
+              );"
+        )
+      )
+
+    sql <-
+      append(
+        sql,
+        paste0(
+          "CREATE TABLE IF NOT EXISTS page_views_", wpd_languages," (
               page_id INTEGER REFERENCES dict_", wpd_languages,"(page_id),
               page_view_date DATE,
               page_view_count INTEGER
             );"
+        )
+      )
+
+    sql <-
+      append(
+        sql,
+        "CREATE TABLE IF NOT EXISTS page_views_dump (
+          page_name TEXT,
+          page_language TEXT,
+          page_view_date DATE,
+          page_view_count INTEGER
+        );"
       )
 
     # execute query
     sql_res <-
       wpd_get_queries(
-        queries = c(sql1, sql2, sql3),
+        queries = sql,
         con     = con,
         flatten = flatten,
         verbose = verbose
