@@ -38,6 +38,7 @@ wpd_filter_extract_worker <-
       lang,
       fname,
       "--",
-      hms::hms(difftime(Sys.time(), start))
+      as.character(hms::hms(round(difftime(Sys.time(), start, units = "sec")))),
+      "\n"
     )
   }
