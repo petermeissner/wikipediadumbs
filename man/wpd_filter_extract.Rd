@@ -4,7 +4,7 @@
 \alias{wpd_filter_extract}
 \title{wpd_filter_extract}
 \usage{
-wpd_filter_extract(fname, lang)
+wpd_filter_extract(file, languages = wpd_languages)
 }
 \arguments{
 \item{fname}{file name to extract data from}
