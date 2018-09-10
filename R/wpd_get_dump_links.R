@@ -7,25 +7,15 @@
 #'
 #' @export
 #'
-wpd_get_dump_links <- function(force = FALSE, directory = NULL ){
+wpd_get_dump_links <-
+  function(
+    out_file =
+      tempfile(
+        pattern = "dump_links",
+        fileext = ".txt"
+      )
+  ){
 
-  # check if links should be read/write to disk cache file or not
-  if( is.null(directory) ){
-    directory <- wpd_options()$directory
-  }
-
-  if( !is.null(directory) ){
-    dump_links_path <- paste0(directory,"/dump_links.txt")
-  }else{
-    dump_links_path <- NULL
-  }
-
-
-  if( force == FALSE && file.exists(dump_links_path) ){
-    wpd_cache$dump_links <- readLines(dump_links_path)
-  }
-
-  if( force == TRUE || is.null(wpd_cache$dump_links) ){
     # some baseline variables
     base_url    <- "https://dumps.wikimedia.org/other/pagecounts-raw"
     year_range  <- 2007:substring(as.character(Sys.Date()), 1,4)
@@ -98,8 +88,6 @@ wpd_get_dump_links <- function(force = FALSE, directory = NULL ){
         ) %>%
         unlist() %>%
         paste0(url, "/", .)
-
-      Sys.sleep(runif(1)*0.5)
     }
 
     # filter links
@@ -108,18 +96,12 @@ wpd_get_dump_links <- function(force = FALSE, directory = NULL ){
       unique() %>%
       grep(pattern = "pagecounts.*pagecounts.*\\.gz$", x = ., value = TRUE)
 
-    # store in cache
-    wpd_cache$dump_links <- dump_links
-  }
 
-  # return
-  if( !is.null(directory) ){
-    writeLines(
-      text = wpd_cache$dump_links,
-      con  = dump_links_path
-    )
-  }
+    # write to file
+    message("dump_links written to ", out_file)
+    writeLines(dump_links, out_file)
 
-  return(wpd_cache$dump_links)
-}
+    # return
+    return(invisible(wpd_cache$dump_links))
+  }
 

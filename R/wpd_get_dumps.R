@@ -8,15 +8,12 @@
 #' @export
 #'
 #'
-wpd_get_dumps <- function(ts, directory = NULL ){
+wpd_get_dumps <- function(ts, directory = "." ){
 
-  if( is.null(directory) ){
-    directory <- wpd_options()$directory
-  }
   stopifnot(!is.null(directory))
 
   # decide which links have to be downloaded
-  links <- get_dump_links(directory = directory)
+  links <- readLines(system.file("dumplinks_2007-2011.txt", package = "wpd"))
   index <-
     stringr::str_extract(basename(links), "\\d{8}") %>%
     grep(paste0("^", ts), .)
@@ -26,35 +23,39 @@ wpd_get_dumps <- function(ts, directory = NULL ){
   # download dumps
   RES <- character(length(to_be_downloaded))
   for( i in seq_along(to_be_downloaded) ){
-    destfile <-
-      gsub("//", "/", paste0(directory, "/", basename(to_be_downloaded[i])))
+      destfile <-
+        gsub("//", "/", paste0(directory, "/", basename(to_be_downloaded[i])))
 
-    if( !file.exists(destfile) ){
-      RES[[i]] <-
-        tryCatch(
-          expr =
+      cat("\r", i, " / ", length(to_be_downloaded), " start" )
+
+      if( !file.exists(destfile) ){
+        RES[[i]] <-
           {
-            download.file(
-              url      = to_be_downloaded[i],
-              destfile = destfile
+            Sys.sleep(2)
+            tryCatch(
+              expr =
+              {
+                download.file(
+                  url      = to_be_downloaded[i],
+                  destfile = destfile
+                )
+                paste0("ok::", destfile)
+              },
+              error = function(e){
+                paste0("error::", e$message)
+              },
+              warning = function(e){
+                paste0("warning::", e$message)
+              }
             )
-            paste0("ok::", destfile)
-          },
-          error = function(e){
-            paste0("error::", e$message)
-          },
-          warning = function(e){
-            paste0("warning::", e$message)
           }
-        )
-      Sys.sleep(2)
-    }else{
-      RES[[i]] <- "skip::file exists already"
-      cat("file exists already - no download\n")
-    }
+      }else{
+        RES[[i]] <- "skip::file exists already"
+        cat("file exists already - no download\n")
+      }
 
-    cat("\r", i, " / ", length(to_be_downloaded) )
+      cat("\r", i, " / ", length(to_be_downloaded), " end   " )
   }
 
-  return(to_be_downloaded)
+  return(data.frame(status= unlist(RES), link = to_be_downloaded))
 }
