@@ -4,7 +4,7 @@ library(future)
 
 # get list of files
 page_count_files_bz2 <-
-  list.files("/data/wpd", pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$", full.names = TRUE)
+  list.files("/data/wpd/", pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$", full.names = TRUE)
 
 plan(multiprocess, workers = 2)
 
