@@ -14,9 +14,7 @@ page_title_files_bz2 <-
     pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
     full.names = TRUE
   ) %>%
-  grep("2012-01", ., value = TRUE) %>%
-  grep("2012-01-0", ., value = TRUE, invert = TRUE) %>%
-  grep("2012-01-10", ., value = TRUE, invert = TRUE)
+  grep("2012-01-10", ., value = TRUE)
 
 
 

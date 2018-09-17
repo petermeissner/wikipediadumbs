@@ -155,7 +155,7 @@ for( i in seq_along(page_title_files_bz2) ){
 
 ### end
 cat(
-  "--- START --- ", as.character(Sys.time()),
+  "--- END --- ", as.character(Sys.time()),
   " - ",
   round(difftime(Sys.time(), start_time_global, units = "hours"), 1), "h  ", "--- \n"
 )
