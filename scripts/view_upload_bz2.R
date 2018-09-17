@@ -118,7 +118,7 @@ for( i in seq_along(page_title_files_bz2)[1] ){
 
     # report on progress
     cat(
-      "\r - ", page_title_files_bz2[i], "-",
+      "\n - ", page_title_files_bz2[i], "-",
       {
         sum_counter <- counter * n_lines
         format(sum_counter, big.mark = ",", scientific = FALSE)
