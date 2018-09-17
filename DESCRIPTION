@@ -17,5 +17,6 @@ Imports: DBI,
     data.table,
     urltools,
     utf8,
-    rlist
+    rlist,
+    hms
 RoxygenNote: 6.1.0
