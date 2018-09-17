@@ -102,6 +102,6 @@ wpd_get_dump_links <-
     writeLines(dump_links, out_file)
 
     # return
-    return(invisible(wpd_cache$dump_links))
+    return(invisible(dump_links))
   }
 

@@ -13,7 +13,15 @@ wpd_get_dumps <- function(ts, directory = "." ){
   stopifnot(!is.null(directory))
 
   # decide which links have to be downloaded
-  links <- readLines(system.file("dumplinks_2007-2011.txt", package = "wpd"))
+  links <-
+    readLines(
+      gzcon(
+        file(
+          description = system.file("dumplinks.gz", package = "wpd"),
+          open = "rb"
+        )
+      )
+    )
   index <-
     stringr::str_extract(basename(links), "\\d{8}") %>%
     grep(paste0("^", ts), .)
