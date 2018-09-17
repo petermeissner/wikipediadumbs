@@ -8,7 +8,7 @@ library(RPostgreSQL)
 
 # get list of files
 page_title_files_bz2 <-
-  list.files("/data/wpd/2012", pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$", full.names = TRUE)
+  list.files("/data/wpd/2013/", pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$", full.names = TRUE)
 
 
 # opening conenction to data base
@@ -21,7 +21,7 @@ start_time  <- Sys.time()
 sum_counter <- 0
 
 
-for( i in seq_along(page_title_files_bz2) ){
+for( i in seq_along(page_title_files_bz2)[1] ){
 
   # date
   date <-
@@ -32,7 +32,14 @@ for( i in seq_along(page_title_files_bz2) ){
     )
 
   # clean up database before putting in data
-  wpd_get_query("delete from page_views_traffic", con = con)
+  wpd_get_query(
+    paste0(
+      "delete from page_views_traffic",
+      " where traffic_data = '", date,"'"
+    ),
+    con = con
+  )
+
   wpd_get_queries(
     queries =
       paste0(
@@ -53,7 +60,7 @@ for( i in seq_along(page_title_files_bz2) ){
 
   # set initial loop values
   counter    <- 0
-  n_lines    <- 25000
+  n_lines    <- 250000
   lines      <- ""
   lines_filter <- data.frame()
 

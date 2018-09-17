@@ -46,7 +46,13 @@ for( i in seq_along(page_title_files_bz2) ){
     )
 
   # clean up database before putting in data
-  wpd_get_query("delete from page_views_traffic", con = con)
+  wpd_get_query(
+    paste0(
+      "delete from page_views_traffic",
+      " where traffic_data = '", date,"'"
+    ),
+    con = con
+  )
   wpd_get_queries(
     queries =
       paste0(
