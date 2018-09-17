@@ -10,11 +10,11 @@ library(data.table)
 # get list of files
 page_title_files_bz2 <-
   list.files(
-    path    = "/data/wpd/2013/",
+    path    = "/data/wpd/2015/",
     pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
     full.names = TRUE
   ) %>%
-  grep("2013-0[123456]", ., value = TRUE)
+  grep("2015-0[123456]", ., value = TRUE)
 
 
 
@@ -63,16 +63,14 @@ for( i in seq_along(page_title_files_bz2) ){
       paste0(
         "delete from page_views_traffic",
         " where traffic_date = '", date,"'"
-      ),
-      con = con
+      )
     )
   wpd_get_queries(
     queries =
       paste0(
         "delete from page_views_", wpd_languages,
         " where page_view_date = '", date, "'"
-      ),
-    con = con
+      )
   )
 
 

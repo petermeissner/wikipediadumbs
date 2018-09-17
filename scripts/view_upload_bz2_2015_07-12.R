@@ -9,31 +9,20 @@ library(data.table)
 
 # get list of files
 page_title_files_bz2 <-
-  list.files(
-    path    = "/data/wpd/2013/",
-    pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
-    full.names = TRUE
-  ) %>%
-  grep("2013-0[123456]", ., value = TRUE)
-
-
-
-dates <-
-  gsub(
-    x           = page_title_files_bz2,
-    pattern     = "(^.*?-)(\\d{4}-\\d{2}-\\d{2})(.bz2)",
-    replacement = "\\2"
+  c(
+    list.files(
+      path    = "/data/wpd/2015/",
+      pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
+      full.names = TRUE
+    ) %>%
+      grep("2015-0[789]", ., value = TRUE),
+    list.files(
+      path    = "/data/wpd/2015/",
+      pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
+      full.names = TRUE
+    ) %>%
+      grep("2015-1[012]", ., value = TRUE)
   )
-
-data_done <-
-  wpd_get_query("select date from data_upload where status = 'done'")$return %>%
-  unlist()
-
-
-iffer <- !(dates %in% data_done)
-
-page_title_files_bz2 <- page_title_files_bz2[iffer]
-
 
 
 
@@ -60,19 +49,17 @@ for( i in seq_along(page_title_files_bz2) ){
 
   # clean up database before putting in data
   wpd_get_query(
-      paste0(
-        "delete from page_views_traffic",
-        " where traffic_date = '", date,"'"
-      ),
-      con = con
+    paste0(
+      "delete from page_views_traffic",
+      " where traffic_date = '", date,"'"
     )
+  )
   wpd_get_queries(
     queries =
       paste0(
         "delete from page_views_", wpd_languages,
         " where page_view_date = '", date, "'"
-      ),
-    con = con
+      )
   )
 
 
@@ -173,9 +160,9 @@ for( i in seq_along(page_title_files_bz2) ){
   }
 
   wpd_get_query(
-      paste0(
-        "insert into data_upload (date, status) values ('", date, "', 'done')"
-      )
+    paste0(
+      "insert into data_upload (date, status) values ('", date, "', 'done')"
+    )
   )
 
   dbDisconnect(conn = con)
