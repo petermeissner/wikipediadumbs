@@ -49,7 +49,7 @@ for( i in seq_along(page_title_files_bz2) ){
   wpd_get_query(
       paste0(
         "delete from page_views_traffic",
-        " where traffic_data = '", date,"'"
+        " where traffic_date = '", date,"'"
       ),
       con = con
     )
