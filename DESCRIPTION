@@ -13,5 +13,9 @@ Imports: DBI,
     RPostgreSQL,
     stringr,
     magrittr,
-    stringi
+    stringi,
+    data.table,
+    urltools,
+    utf8,
+    rlist
 RoxygenNote: 6.1.0

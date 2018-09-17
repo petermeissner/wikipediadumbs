@@ -1,13 +1,10 @@
 library(wpd)
-library(future)
 
 
 # get list of files
 page_title_files_bz2 <-
-  list.files("/data/wpd", pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$", full.names = TRUE)
+  list.files("/data/wpd/2012", pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$", full.names = TRUE)
 
-plan(multiprocess, workers = 2)
-wpd_filter_extract("/data/wpd/pagecounts-2014-01-01.bz2")
 
 
 
