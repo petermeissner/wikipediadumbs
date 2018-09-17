@@ -13,7 +13,7 @@ wpd_progress <- function(){
     list(
       percentage = round(mean(dates %in% dates_in_db) * 100, 4),
       time_s     = as.integer(difftime(max(traffic$upload_ts), min(traffic$upload_ts), units = "secs")),
-      time_hms   = as.character(hms::hms(difftime(max(traffic$upload_ts), min(traffic$upload_ts), units = "secs"))),
+      time_hms   = as.character(hms::hms(as.integer(difftime(max(traffic$upload_ts), min(traffic$upload_ts), units = "secs")))),
       ts_max     = max(traffic$upload_ts),
       ts_min     = min(traffic$upload_ts)
     )
