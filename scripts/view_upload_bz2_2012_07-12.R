@@ -9,19 +9,21 @@ library(data.table)
 
 # get list of files
 page_title_files_bz2 <-
-  list.files(
-    path    = "/data/wpd/2012",
-    pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
-    full.names = TRUE
-  ) %>%
-  grep("2012-01-02", ., value = TRUE)
+  c(
+    list.files(
+      path    = "/data/wpd/2012/",
+      pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
+      full.names = TRUE
+    ) %>%
+      grep("2012-0[789]", ., value = TRUE),
+    list.files(
+      path    = "/data/wpd/2012/",
+      pattern = "\\d{4}-\\d{2}-\\d{2}\\.bz2$",
+      full.names = TRUE
+    ) %>%
+      grep("2012-1[012]", ., value = TRUE)
+  )
 
-
-
-
-# opening conenction to data base
-# establish database connection
-con     <- wpd_connect()
 
 
 # preparing loop stats
@@ -50,16 +52,14 @@ for( i in seq_along(page_title_files_bz2) ){
     paste0(
       "delete from page_views_traffic",
       " where traffic_date = '", date,"'"
-    ),
-    con = con
+    )
   )
   wpd_get_queries(
     queries =
       paste0(
         "delete from page_views_", wpd_languages,
         " where page_view_date = '", date, "'"
-      ),
-    con = con
+      )
   )
 
 
@@ -73,9 +73,19 @@ for( i in seq_along(page_title_files_bz2) ){
 
   # set initial loop values
   counter    <- 0
-  n_lines    <- 250000
+  n_lines    <- 100000
   lines      <- ""
   lines_filter <- data.frame()
+
+  # opening conenction to data base
+  # establish database connection
+  con     <- wpd_connect()
+
+  wpd_get_query(
+    paste0(
+      "insert into data_upload (date, status) values ('", date, "', 'started')"
+    )
+  )
 
   # read first chunk of lines
   while ( length(lines) > 0 ){
@@ -148,6 +158,15 @@ for( i in seq_along(page_title_files_bz2) ){
       round(difftime(Sys.time(), start_time, units = "mins"), 1), "min                   "
     )
   }
+
+  wpd_get_query(
+    paste0(
+      "insert into data_upload (date, status) values ('", date, "', 'done')"
+    )
+  )
+
+  dbDisconnect(conn = con)
+  close(bz_con)
 }
 
 
