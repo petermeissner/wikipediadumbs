@@ -25,6 +25,39 @@ page_title_files_bz2 <-
   )
 
 
+dates <-
+  gsub(
+    x           = page_title_files_bz2,
+    pattern     = "(^.*?-)(\\d{4}-\\d{2}-\\d{2})(.bz2)",
+    replacement = "\\2"
+  )
+
+data_done <-
+  wpd_get_query("select date from data_upload where status = 'done'")$return %>%
+  unlist()
+
+
+
+data_tried <-
+  wpd_get_query("select date from data_upload where status = 'started'")$return %>%
+  unlist()
+
+
+iffer_not_done  <- !(dates %in% data_done)
+iffer_not_tried <- !(dates %in% data_tried)
+
+if ( all(iffer_not_tried == FALSE) ){
+  iffer <- iffer_not_done
+} else {
+  iffer <- iffer_not_tried
+}
+
+
+page_title_files_bz2 <- page_title_files_bz2[iffer]
+
+
+
+
 
 # preparing loop stats
 start_time_global  <- Sys.time()
@@ -33,7 +66,6 @@ sum_counter <- 0
 
 # report time script started
 cat("--- START --- ", as.character(start_time_global), " --- \n")
-
 
 for( i in seq_along(page_title_files_bz2) ){
 
@@ -77,10 +109,8 @@ for( i in seq_along(page_title_files_bz2) ){
   lines      <- ""
   lines_filter <- data.frame()
 
-  # opening conenction to data base
-  # establish database connection
-  con     <- wpd_connect()
 
+  # log the start of the script
   wpd_get_query(
     paste0(
       "insert into data_upload (date, status) values ('", date, "', 'started')"
@@ -92,58 +122,23 @@ for( i in seq_along(page_title_files_bz2) ){
     counter      <- counter + 1
     lines        <- readLines(con = bz_con, n = n_lines)
 
-    lines_filtered <-
-      grep(
-        x           = lines,
-        pattern     = paste0("(^", wpd_languages, "\\.z)", collapse = "|"),
-        value       = TRUE,
-        ignore.case = TRUE
+    lines_list <- wpd_dump_lines_to_df_list(lines)
+
+    res <-
+      lapply(
+        X   = lines_list,
+        FUN =
+          function(df){
+            wpd_upload_pageview_counts(
+              page_name       = df$page_name,
+              page_view_count = df$page_view_count,
+              page_view_date  = date,
+              page_language   = df$lang[1]
+            )
+          }
       )
 
-    if( length(lines_filtered) > 0 ){
-      lines_df <-
-        lines_filtered %>%
-        tolower() %>%
-        paste(collapse = "\n" ) %>%
-        fread(
-          input = .,
-          sep = " ",
-          header = FALSE,
-          stringsAsFactors = FALSE,
-          encoding = "UTF-8",
-          select = 1:3,
-          data.table = TRUE,
-          colClasses = c("character", "character", "integer", "character")
-        ) %>%
-        setNames(c("lang", "page_name", "page_view_count")) %>%
-        mutate(
-          lang      = substr(lang, 1, 2),
-          page_name = utf8_encode(url_decode(page_name))
-        )
-    }else{
-      lines_df <- data.frame()
-    }
 
-
-    if ( nrow(lines_df) > 0 ) {
-      lines_list <-
-        split(lines_df, lines_df$lang)
-
-      res <-
-        lapply(
-          X   = lines_list,
-          FUN =
-            function(df){
-              wpd_upload_pageview_counts(
-                page_name       = df$page_name,
-                page_view_count = df$page_view_count,
-                page_view_date  = date,
-                page_language   = df$lang[1],
-                conn            = con
-              )
-            }
-        )
-    }
 
     # report on progress
     cat(
