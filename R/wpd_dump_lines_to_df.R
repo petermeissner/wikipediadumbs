@@ -12,7 +12,7 @@ wpd_dump_lines_to_df_list <-
     if ( filter == TRUE ){
       lines_filtered <-
         grep(
-          x           = utf8::utf8_encode(lines),
+          x           = lines,
           pattern     = paste0("(^", wpd_languages, "\\.z)", collapse = "|"),
           value       = TRUE,
           ignore.case = TRUE
@@ -27,6 +27,7 @@ wpd_dump_lines_to_df_list <-
     if( length(lines_filtered) > 0 ){
       lines_df <-
         lines_filtered %>%
+        utf8_encode() %>%
         tolower() %>%
         paste0(collapse = "\n") %>%
         paste0("\n") %>%
@@ -39,7 +40,8 @@ wpd_dump_lines_to_df_list <-
           select           = 1:3,
           data.table       = TRUE,
           colClasses       = c("character", "character", "integer", "character"),
-          fill             = TRUE
+          fill             = TRUE,
+          quote            = ""
         ) %>%
         setNames(c("lang", "page_name", "page_view_count")) %>%
         mutate(
@@ -54,7 +56,7 @@ wpd_dump_lines_to_df_list <-
         ) %>%
         data.table()
     }else{
-      lines_df <- data.table::data.table()
+      lines_df <- data.table()
     }
 
 
