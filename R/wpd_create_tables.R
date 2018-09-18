@@ -58,10 +58,42 @@ wpd_create_tables <-
             page_language TEXT,
           	traffic_date DATE,
           	page_views_count INTEGER,
-          	traffic_count INTEGER
+          	traffic_count INTEGER,
+            upload_ts timestamp NOT NULL DEFAULT now(),
+	          upload_file_name varchar NULL,
+	          upload_progress varchar NULL
         )
       ;"
     )
+
+    sql <-
+      append(
+        sql,
+        "CREATE INDEX
+            if not exists
+            page_views_traffic_page_language_idx
+            ON public.page_views_traffic
+            (
+              page_language,
+              upload_file_name,
+              traffic_date
+            );"
+      )
+
+    sql <-
+      append(
+        paste0(
+          "CREATE UNIQUE INDEX
+          if not exists
+          page_views_",wpd_languages,"_page_id_idx
+          ON public.page_views_",wpd_languages,"
+          (
+            page_id,
+            page_view_date
+          );"
+        )
+      )
+
 
     # execute query
     sql_res <-
