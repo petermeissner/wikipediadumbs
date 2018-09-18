@@ -12,7 +12,7 @@ wpd_dump_lines_to_df_list <-
     if ( filter == TRUE ){
       lines_filtered <-
         grep(
-          x           = lines,
+          x           = utf8::utf8_encode(lines),
           pattern     = paste0("(^", wpd_languages, "\\.z)", collapse = "|"),
           value       = TRUE,
           ignore.case = TRUE
@@ -28,7 +28,8 @@ wpd_dump_lines_to_df_list <-
       lines_df <-
         lines_filtered %>%
         tolower() %>%
-        paste(collapse = "\n", "\n" ) %>%
+        paste0(collapse = "\n") %>%
+        paste0("\n") %>%
         fread(
           input            = .,
           sep              = " ",
@@ -37,13 +38,21 @@ wpd_dump_lines_to_df_list <-
           encoding         = "UTF-8",
           select           = 1:3,
           data.table       = TRUE,
-          colClasses       = c("character", "character", "integer", "character")
+          colClasses       = c("character", "character", "integer", "character"),
+          fill             = TRUE
         ) %>%
         setNames(c("lang", "page_name", "page_view_count")) %>%
         mutate(
           lang      = substr(lang, 1, 2),
-          page_name = utf8_encode(url_decode(page_name))
-        )
+          page_name = url_decode(page_name)
+        ) %>%
+        group_by(
+          lang, page_name
+        ) %>%
+        summarise(
+          page_view_count = sum(page_view_count)
+        ) %>%
+        data.table()
     }else{
       lines_df <- data.table::data.table()
     }
@@ -52,8 +61,8 @@ wpd_dump_lines_to_df_list <-
 
     # split
     if (split == TRUE ){
-      return(lines_df)
-    } else {
       return(split(lines_df, lines_df$lang))
+    } else {
+      return(lines_df)
     }
   }

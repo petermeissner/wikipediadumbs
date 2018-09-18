@@ -71,6 +71,9 @@ wpd_upload_pageview_counts <-
       			from page_view_data
       			where page_id is not null
       		)
+          ON CONFLICT (page_id, page_view_date)
+          DO UPDATE
+          SET page_view_count = excluded.page_view_count
       	)
       insert into page_views_traffic
       	(page_language, traffic_date, traffic_count, page_views_count)

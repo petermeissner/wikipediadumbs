@@ -86,13 +86,6 @@ for( i in seq_along(page_title_files_bz2) ){
       " where traffic_date = '", date,"'"
     )
   )
-  wpd_get_queries(
-    queries =
-      paste0(
-        "delete from page_views_", wpd_languages,
-        " where page_view_date = '", date, "'"
-      )
-  )
 
 
   # open file connection
@@ -130,7 +123,7 @@ for( i in seq_along(page_title_files_bz2) ){
         FUN =
           function(df){
             wpd_upload_pageview_counts(
-              page_name       = df$page_name,
+              page_name       = utf8_encode(df$page_name),
               page_view_count = df$page_view_count,
               page_view_date  = date,
               page_language   = df$lang[1]
@@ -147,7 +140,7 @@ for( i in seq_along(page_title_files_bz2) ){
         sum_counter <- counter * n_lines
         format(sum_counter, big.mark = ",", scientific = FALSE)
       },
-      "\t ~",
+      " ~",
       "| ", round((difftime(Sys.time(), start_time, units = "secs") / (sum_counter)) * 1000000, 1), "sec/Mio",
       "| \u2211",
       round(difftime(Sys.time(), start_time, units = "mins"), 1), "min                   "
