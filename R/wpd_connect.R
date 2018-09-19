@@ -6,11 +6,11 @@
 #' @export
 #'
 wpd_connect <-
-  function(){
+  function(node = 1){
     RPostgreSQL::dbConnect(
       drv      = RPostgreSQL::PostgreSQL(),
       dbname   = "wikipedia",
-      host     = "petermeissner.de",
+      host     = c("petermeissner.de", "h2800722.stratoserver.net")[node],
       port     = 5432,
       user     = Sys.getenv("wpd_user"),
       password = Sys.getenv("wpd_password")

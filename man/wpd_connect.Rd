@@ -4,7 +4,7 @@
 \alias{wpd_connect}
 \title{wpd_connect}
 \usage{
-wpd_connect()
+wpd_connect(node = 1)
 }
 \value{
 A DBI/RPostgreSQL compliant connection object.
