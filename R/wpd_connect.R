@@ -10,7 +10,7 @@ wpd_connect <-
     RPostgreSQL::dbConnect(
       drv      = RPostgreSQL::PostgreSQL(),
       dbname   = "wikipedia",
-      host     = c("petermeissner.de", "h2800722.stratoserver.net")[node],
+      host     = wpd_nodes[node],
       port     = 5432,
       user     = Sys.getenv("wpd_user"),
       password = Sys.getenv("wpd_password")
