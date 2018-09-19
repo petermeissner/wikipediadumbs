@@ -11,10 +11,10 @@
 #'
 #'
 wpd_get_query <-
-  function(query, verbose = TRUE, con = NULL){
+  function(query, verbose = TRUE, con = NULL, node = 1){
     # establish connection
     if( is.null(con) ){
-      con <- wpd_connect()
+      con <- wpd_connect(node = node)
       on.exit(DBI::dbDisconnect(con))
     } else {
       # do nothing
@@ -26,6 +26,7 @@ wpd_get_query <-
     res$return <- suppressWarnings(DBI::dbGetQuery(con, query))
     res$end    <- as.character(Sys.time())
     res$status <- DBI::dbGetException(con)
+    res$node   <- DBI::dbGetInfo(con)$host
 
     # return
     if ( verbose == TRUE ){

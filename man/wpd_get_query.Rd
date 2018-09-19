@@ -4,7 +4,7 @@
 \alias{wpd_get_query}
 \title{wpd_get_query}
 \usage{
-wpd_get_query(query, verbose = TRUE, con = NULL)
+wpd_get_query(query, verbose = TRUE, con = NULL, node = 1)
 }
 \arguments{
 \item{query}{SQL statement to execute}

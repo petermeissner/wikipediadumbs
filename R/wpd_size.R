@@ -4,6 +4,6 @@
 #' @export
 #'
 wpd_size <-
-  function(){
-    as.list(wpd_get_query("select * from db_size()")$return)
+  function(node = 1){
+    res <- as.list(wpd_get_query("select * from db_size()", node = node)$return)
   }
