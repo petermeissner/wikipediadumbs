@@ -4,7 +4,7 @@
 \alias{wpd_size}
 \title{wpd_size}
 \usage{
-wpd_size(node = 1)
+wpd_size(node = wpd_nodes_master)
 }
 \value{
 list with twot items: machine size of db, human readable size of db

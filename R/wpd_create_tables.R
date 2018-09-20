@@ -6,10 +6,10 @@
 #' @export
 #'
 wpd_create_tables <-
-  function(flatten = TRUE, verbose = TRUE){
+  function(flatten = TRUE, verbose = TRUE, node = NULL){
 
     # handle connection
-    con <- wpd_connect()
+    con <- wpd_connect(node = node)
     on.exit(DBI::dbDisconnect(con))
 
 

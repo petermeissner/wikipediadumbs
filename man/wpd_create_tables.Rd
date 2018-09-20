@@ -4,7 +4,7 @@
 \alias{wpd_create_tables}
 \title{wpd_create_tables}
 \usage{
-wpd_create_tables(flatten = TRUE, verbose = TRUE)
+wpd_create_tables(flatten = TRUE, verbose = TRUE, node = NULL)
 }
 \arguments{
 \item{flatten}{flatten query results}

@@ -3,8 +3,7 @@
 #' @export
 wpd_nodes <-
   c(
-    master = "h2800722.stratoserver.net",
-    pm     = "petermeissner.de",
+    pm     = "h2707260.stratoserver.net",
     pm2    = "h2800602.stratoserver.net",
     pm3    = "h2800722.stratoserver.net",
     pm4    = "h2802277.stratoserver.net",

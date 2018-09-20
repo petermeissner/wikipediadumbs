@@ -11,22 +11,37 @@
 #'
 #'
 wpd_get_query <-
-  function(query, verbose = TRUE, con = NULL, node = 1){
+  function(query, verbose = TRUE, con = NULL, node = 1, close = NULL, dt = TRUE){
+
+    # returnt type dt or not
+    if(dt == TRUE){
+      dt <- function(x){data.table::data.table(x)}
+    } else {
+      dt <- function(x){x}
+    }
+
     # establish connection
     if( is.null(con) ){
+
       con <- wpd_connect(node = node)
       on.exit(DBI::dbDisconnect(con))
-    } else {
+
+    } else if ( !is.null(close) && close == TRUE ){
+
+      on.exit(DBI::dbDisconnect(con))
+
+    } else{
       # do nothing
     }
 
     # execute query and get potential exception/error
     res        <- list()
     res$start  <- as.character(Sys.time())
-    res$return <- suppressWarnings(DBI::dbGetQuery(con, query))
+    res$return <- dt(suppressWarnings(DBI::dbGetQuery(con, query)))
     res$end    <- as.character(Sys.time())
     res$status <- DBI::dbGetException(con)
-    res$node   <- DBI::dbGetInfo(con)$host
+    res$host   <- DBI::dbGetInfo(con)$host
+    res$node   <- names(wpd_nodes)[wpd_nodes == res$host]
 
     # return
     if ( verbose == TRUE ){

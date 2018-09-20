@@ -4,7 +4,7 @@
 \name{wpd_nodes}
 \alias{wpd_nodes}
 \title{list of server nodes}
-\format{An object of class \code{character} of length 8.}
+\format{An object of class \code{character} of length 7.}
 \usage{
 wpd_nodes
 }

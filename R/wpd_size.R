@@ -4,6 +4,12 @@
 #' @export
 #'
 wpd_size <-
-  function(node = 1){
-    res <- as.list(wpd_get_query("select * from db_size()", node = node)$return)
+  function(node = wpd_nodes_master){
+    tmp      <- wpd_get_query("select * from db_size()", node = node)
+    res      <- as.list(tmp$return)
+    res$host <- tmp$host
+    res$node <- tmp$node
+
+    # return
+    res
   }

@@ -7,7 +7,7 @@
 wpd_progress()
 }
 \value{
-list of proress indicators
+list of progress indicators
 }
 \description{
 wpd_progress
