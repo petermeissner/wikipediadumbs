@@ -30,7 +30,7 @@ wpd_dump_lines_to_df_list <-
         utf8_encode() %>%
         tolower() %>%
         paste0(collapse = "\n") %>%
-        paste0("\n") %>%
+        paste0("\ncs.z wpd_dump_lines_to_df_test_entry 0 a") %>%
         fread(
           input            = .,
           sep              = " ",
@@ -48,11 +48,14 @@ wpd_dump_lines_to_df_list <-
           lang      = substr(lang, 1, 2),
           page_name = url_decode(page_name)
         ) %>%
+        filter(
+          page_name != "wpd_dump_lines_to_df_test_entry"
+        ) %>%
         group_by(
           lang, page_name
         ) %>%
         summarise(
-          page_view_count = sum(page_view_count)
+          page_view_count = sum(page_view_count, na.rm = TRUE)
         ) %>%
         data.table()
     }else{
