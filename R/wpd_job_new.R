@@ -1,5 +1,5 @@
 
-#' wpd_upload_new_job
+#' wpd_job_new
 #'
 #' @param lang language covered by job
 #' @param date date covered by job
@@ -7,12 +7,21 @@
 #'
 #' @export
 #'
-wpd_upload_new_job <-
+wpd_job_new <-
   function(
     lang,
     date,
-    file
+    file,
+    job_type
   ) {
+
+    stopifnot(
+      !is.null(lang),
+      !is.null(date),
+      !is.null(file),
+      !is.null(job_type),
+      file.exists(file)
+    )
 
     # filter tasks
     sql <-
@@ -33,7 +42,7 @@ wpd_upload_new_job <-
             job_start_ts     = as.character(Sys.time()),
             job_status       = "start",
             job_progress     = 0,
-            job_type         = "bz2",
+            job_type         = job_type,
             job_run_node     = wpd_current_node(),
             job_target_node  = wpd_current_node(),
             job_file         = file,
