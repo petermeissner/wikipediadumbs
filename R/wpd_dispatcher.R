@@ -38,8 +38,11 @@ wpd_dispatcher <- function(){
     ps           <- system("ps aux | grep peter", intern = TRUE)
     ps_rscript_n <- length(grep("/usr/lib/R/bin/exec/R", ps, value = TRUE))
 
-    if ( ps_rscript_n < 2 ){
+    while ( ps_rscript_n < 3 & length(jobs_open) > 0 ){
+      ps_rscript_n <- ps_rscript_n + 1
+
       proto <- system.file("view_upload_bz2.R", package = "wpd")
+
       system_command <-
         sprintf(
           'nohup Rscript %s file=%s > %s 2>&1 &',
@@ -47,7 +50,28 @@ wpd_dispatcher <- function(){
           jobs_open[1],
           paste0("/home/peter/", basename(jobs_open[1]), ".error")
         )
+
       system(system_command)
+      jobs_open <- jobs_open[-1]
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
