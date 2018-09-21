@@ -9,7 +9,8 @@
 \usage{
 \S4method{sqlValues}{DBIConnection,vector}(conn, x, ..., val_sep = "\\n")
 
-\S4method{sqlValues}{DBIConnection,data.frame}(conn, x, ..., val_sep = "\\n")
+\S4method{sqlValues}{DBIConnection,data.frame}(conn, x, ...,
+  val_sep = "\\n")
 }
 \description{
 hidden aliases

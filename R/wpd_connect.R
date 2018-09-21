@@ -6,7 +6,12 @@
 #' @export
 #'
 wpd_connect <-
-  function(node = 1){
+  function(node = NULL){
+
+    if(is.null(node)){
+      node <- wpd_current_node()
+    }
+
     RPostgreSQL::dbConnect(
       drv      = RPostgreSQL::PostgreSQL(),
       dbname   = "wikipedia",
