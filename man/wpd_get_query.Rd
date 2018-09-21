@@ -18,6 +18,8 @@ wpd_get_query_master(query, verbose = TRUE, con = NULL, dt = TRUE,
 }
 \description{
 Establish a connection, execute SQL statement against database, close connection and return.
+
+wpd_get_query_master
 }
 \examples{
 

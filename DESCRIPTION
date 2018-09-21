@@ -1,12 +1,11 @@
 Package: wpd
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: Handling Wikipedia Page View Dumps
+Version: 0.2.0
 Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Maintainer: Peter Meissner <retep.meissner@gmail.com>
+Description: Handling Wikipedia Page View Dumps.
+License: propriatary
 Encoding: UTF-8
 LazyData: true
 Imports: DBI,
@@ -18,5 +17,6 @@ Imports: DBI,
     urltools,
     utf8,
     rlist,
-    hms
+    hms,
+    telegram
 RoxygenNote: 6.1.0
