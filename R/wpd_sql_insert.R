@@ -7,7 +7,7 @@
 wpd_sql_insert <- function(...){
 
   con <- wpd_connect()
-  on.exit(dbDisconnect(con))
+  on.exit(DBI::dbDisconnect(con))
 
   df <- list(...)
 

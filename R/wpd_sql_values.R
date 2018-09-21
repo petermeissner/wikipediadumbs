@@ -6,6 +6,6 @@
 #'
 wpd_sql_values <- function(values){
   con <- wpd_connect()
-  on.exit(dbDisconnect(con))
+  on.exit(DBI::dbDisconnect(con))
   sqlValues(con, values)
 }
