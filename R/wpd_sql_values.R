@@ -7,5 +7,5 @@
 wpd_sql_values <- function(values){
   con <- wpd_connect()
   on.exit(DBI::dbDisconnect(con))
-  sqlValues(con, values)
+  paste0("(",paste0(DBI::dbQuoteLiteral(con, values), collapse = ", "), ")")
 }
