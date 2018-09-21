@@ -11,8 +11,10 @@ suppressPackageStartupMessages({
 
 
 args <- wpd_get_args()
-file <- args$file
-cat(file)
+if( class(file) =="function" ){
+  file <- args$file
+}
+cat("\n\n -- ", file, "-- \n\n ")
 
 
 

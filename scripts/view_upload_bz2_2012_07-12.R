@@ -87,6 +87,15 @@ for( i in seq_along(page_title_files_bz2) ){
     )
   )
 
+  wpd_get_queries(
+    queries =
+      paste0(
+        "delete from page_views_", wpd_languages,
+        " where page_view_date = '", date, "'"
+      )
+  )
+
+
 
   # open file connection
   bz_con <-
@@ -153,7 +162,6 @@ for( i in seq_along(page_title_files_bz2) ){
     )
   )
 
-  dbDisconnect(conn = con)
   close(bz_con)
 }
 
