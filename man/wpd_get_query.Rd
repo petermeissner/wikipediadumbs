@@ -5,8 +5,8 @@
 \alias{wpd_get_query_master}
 \title{wpd_get_query}
 \usage{
-wpd_get_query(query, verbose = TRUE, con = NULL, node = 1, close = NULL,
-  dt = TRUE)
+wpd_get_query(query, verbose = TRUE, con = NULL, node = NULL,
+  close = NULL, dt = TRUE)
 
 wpd_get_query_master(query, verbose = TRUE, con = NULL, dt = TRUE,
   close = NULL)

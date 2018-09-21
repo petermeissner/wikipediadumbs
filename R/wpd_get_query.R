@@ -11,7 +11,11 @@
 #'
 #'
 wpd_get_query <-
-  function(query, verbose = TRUE, con = NULL, node = 1, close = NULL, dt = TRUE){
+  function(query, verbose = TRUE, con = NULL, node = NULL, close = NULL, dt = TRUE){
+
+    if ( is.null(node) ){
+      node <- wpd_current_node()
+    }
 
     # returnt type dt or not
     if(dt == TRUE){
