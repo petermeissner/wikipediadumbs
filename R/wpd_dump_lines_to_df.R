@@ -12,7 +12,7 @@ wpd_dump_lines_to_df_list <-
     if ( filter == TRUE ){
       lines_filtered <-
         grep(
-          x           = lines_filtered,
+          x           = lines,
           pattern     =
             sprintf(
               "(%s) \\S+ \\S+ \\S+",

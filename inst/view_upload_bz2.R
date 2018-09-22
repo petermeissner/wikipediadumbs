@@ -12,9 +12,11 @@ suppressPackageStartupMessages({
 
 args <- wpd_get_args()
 if( class(file) =="function" ){
-  file <- args$file
+  file  <- args$file
 }
 cat("\n\n -- ", file, "-- \n\n ")
+
+
 
 
 
@@ -28,33 +30,41 @@ options(
 
       if(!exists("lang")){
         lang <- ""
-      } else {
-        lang <- paste0(lang, collapse = ", ")
       }
 
 
       em    <- geterrmessage()
       fname <- paste0("Rscript_", paste(date, paste(lang, collapse = "_"), sep = "_"), ".error")
       sink(file = fname)
-      traceback(2)
+        cat( "\n-----------------\n\n", em, "\n----------------\n")
+        traceback(2)
       sink()
 
       cat( "\n-----------------\n\n", em, "\n----------------\n")
       cat(readLines(fname), sep = "\n")
 
+
+
       if ( exists("job_id") ){
+
+        cat( "\n-----------------\n\n", job_id, "\n----------------\n")
+
         wpd_job_update(
           job_id      = job_id,
           job_status  = "error",
-          job_comment = readLines(fname)
+          job_comment = paste(readLines(fname), collapse = "\n"),
+          job_end_ts  = as.character(Sys.time())
         )
+
+      }else{
+        job_id <- "unknown"
       }
 
       wpd_notify(
-        wpd_current_node(), "--",
+        wpd_current_node(), "[", job_id, "]",
         date, "--",
-        lang, "--",
-        readLines(fname)
+        paste(lang, collapse = ", "), "--",
+        paste(readLines(fname), collapse = "\n")
       )
 
 

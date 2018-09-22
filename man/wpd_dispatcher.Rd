@@ -4,7 +4,7 @@
 \alias{wpd_dispatcher}
 \title{wpd_dispatcher}
 \usage{
-wpd_dispatcher()
+wpd_dispatcher(file = NULL, retry = FALSE, n_jobs = 2)
 }
 \description{
 function that can be called by cron job via Rscript -e "wpd::wpd_dispatcher()"
