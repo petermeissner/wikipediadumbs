@@ -12,10 +12,13 @@ wpd_dump_lines_to_df_list <-
     if ( filter == TRUE ){
       lines_filtered <-
         grep(
-          x           = lines,
-          pattern     = paste0("(^", wpd_languages, "\\.z)", collapse = "|"),
-          value       = TRUE,
-          ignore.case = TRUE
+          x           = lines_filtered,
+          pattern     =
+            sprintf(
+              "(%s) \\S+ \\S+ \\S+",
+              paste0("(^", wpd_languages, "\\.z)", collapse = "|")
+            ),
+          value       = TRUE
         )
     } else {
       lines_filtered <- lines
@@ -26,7 +29,7 @@ wpd_dump_lines_to_df_list <-
     # transform to data.frame
     if( length(lines_filtered) > 0 ){
       lines_df <-
-        lines_filtered %>%
+        lines_filtered[9:10] %>%
         utf8_encode() %>%
         tolower() %>%
         paste0(collapse = "\n") %>%
