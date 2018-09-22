@@ -50,9 +50,21 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
 
     if ( ps_rscript_n <= n_jobs & length(jobs_open) > 0 ){
       while ( ps_rscript_n <= n_jobs  & length(jobs_open) > 0 ){
+
+        # increment counter by one
         ps_rscript_n <- ps_rscript_n + 1
 
-        proto <- system.file("view_upload_bz2.R", package = "wpd")
+        # decide on which script to use
+        proto_bz2 <- system.file("view_upload_bz2.R", package = "wpd")
+        proto_gz  <- system.file("view_upload_gz.R",  package = "wpd")
+
+        if ( grepl("bz2$", jobs_open[1]) ){
+          proto <- proto_bz2
+        } else if ( grepl("gz$", jobs_open[1]) ){
+          proto <- proto_gz
+        } else {
+          stop( "Do not know how to handle this job type.")
+        }
 
         system_command <-
           sprintf(
