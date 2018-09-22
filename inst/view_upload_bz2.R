@@ -28,16 +28,18 @@ options(
 
       if(!exists("lang")){
         lang <- ""
+      } else {
+        lang <- paste0(lang, collapse = ", ")
       }
 
 
-      em <- geterrmessage()
+      em    <- geterrmessage()
       fname <- paste0("Rscript_", paste(date, paste(lang, collapse = "_"), sep = "_"), ".error")
       sink(file = fname)
       traceback(2)
       sink()
 
-      cat( "\n\n", em, "\n\n")
+      cat( "\n-----------------\n\n", em, "\n----------------\n")
       cat(readLines(fname), sep = "\n")
 
       if ( exists("job_id") ){
@@ -49,8 +51,9 @@ options(
       }
 
       wpd_notify(
-        date,
-        lang,
+        wpd_current_node(), "--",
+        date, "--",
+        lang, "--",
         readLines(fname)
       )
 

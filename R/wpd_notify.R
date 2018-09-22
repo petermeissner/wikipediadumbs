@@ -5,7 +5,7 @@
 #' @export
 #'
 wpd_notify <- function(...){
-  bot_env$bot$sendMessage(paste(..., collapse = "\n"))
+  bot_env$bot$sendMessage(paste(..., collapse = "\n\n"))
 }
 
 
