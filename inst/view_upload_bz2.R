@@ -21,43 +21,43 @@ cat("\n\n -- ", file, "-- \n\n ")
 # error handler
 options(
   "error" =
-  function(){
-    if ( !exists("date") | class(date) == "function" ){
-      date <- ""
-    }
+    function(){
+      if ( !exists("date") | class(date) == "function" ){
+        date <- ""
+      }
 
-    if(!exists("lang")){
-      lang <- ""
-    }
+      if(!exists("lang")){
+        lang <- ""
+      }
 
 
-    em <- geterrmessage()
-    fname <- paste0("Rscript_", paste(date, paste(lang, collapse = "_"), sep = "_"), ".error")
-    sink(file = fname)
-    traceback(2)
-    sink()
+      em <- geterrmessage()
+      fname <- paste0("Rscript_", paste(date, paste(lang, collapse = "_"), sep = "_"), ".error")
+      sink(file = fname)
+      traceback(2)
+      sink()
 
-    cat( "\n\n", em, "\n\n")
-    cat(readLines(fname), sep = "\n")
+      cat( "\n\n", em, "\n\n")
+      cat(readLines(fname), sep = "\n")
 
-    if ( exists("job_id") ){
-      wpd_job_update(
-        job_id      = job_id,
-        job_status  = "error",
-        job_comment = readLines(fname)
+      if ( exists("job_id") ){
+        wpd_job_update(
+          job_id      = job_id,
+          job_status  = "error",
+          job_comment = readLines(fname)
+        )
+      }
+
+      wpd_notify(
+        date,
+        lang,
+        readLines(fname)
       )
+
+
+      if(!interactive()){q(save = "no")}
+
     }
-
-    wpd_notify(
-      date,
-      lang,
-      readLines(fname)
-    )
-
-
-    if(!interactive()){q(save = "no")}
-
-  }
 )
 
 
@@ -78,12 +78,12 @@ if(!exists("lang")){
 
 
 # check global variables
-  stopifnot(
-    exists("date"),
-    exists("lang"),
-    exists("file"),
-    class(file) != "function"
-  )
+stopifnot(
+  exists("date"),
+  exists("lang"),
+  exists("file"),
+  class(file) != "function"
+)
 
 
 
@@ -244,7 +244,19 @@ wpd_task_update(
 
 cat(
   "\n\n--- done after:",
-  as.character(hms::hms(round(difftime(Sys.time(), start_time, units = "secs")))),
+  as.character(
+    hms::hms(
+      round(
+        as.numeric(
+          difftime(
+            Sys.time(),
+            start_time,
+            units = "secs"
+          )
+        )
+      )
+    )
+  ),
   "---\n"
 )
 
