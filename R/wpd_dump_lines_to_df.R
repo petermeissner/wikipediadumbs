@@ -29,7 +29,7 @@ wpd_dump_lines_to_df_list <-
     # transform to data.frame
     if( length(lines_filtered) > 0 ){
       lines_df <-
-        lines_filtered[9:10] %>%
+        lines_filtered %>%
         utf8_encode() %>%
         tolower() %>%
         paste0(collapse = "\n") %>%
