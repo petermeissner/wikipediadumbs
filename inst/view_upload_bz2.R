@@ -261,8 +261,8 @@ options(
     wpd_task_update(
       task_id        = wpd_get_tasks(date = date, lang = lang)$task_id,
       task_status    = "done",
-      task_duration  = as.integer(difftime(Sys.time(), start_time, units = "secs")),
-      task_volume    = progress
+      task_duration  = (as.integer(difftime(Sys.time(), start_time, units = "secs")) / length(lang)),
+      task_volume    = (progress / length(lang))
     )
   }
 )()
