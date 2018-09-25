@@ -11,7 +11,12 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
   # todos
   if( class(file) == "function" | is.null(file) ){
     todos <-
-      list.files("/data/wpd/todo", full.names = TRUE, recursive = TRUE)
+      list.files(
+        path       = "/data/wpd/todo",
+        full.names = TRUE,
+        recursive  = TRUE,
+        pattern    = "(.+?)((\\.gz)|(.bz2))$"
+      )
   } else {
     todos <- file
   }

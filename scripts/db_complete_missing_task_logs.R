@@ -21,7 +21,7 @@ tasks %>%
   geom_hline(data = data.frame(y=0), aes(yintercept=y))
 
 
-# get tasks that are done but status not set for all tasks
+#
 tasks_done <-
   tasks %>%
   group_by(task_date) %>%
@@ -29,7 +29,8 @@ tasks_done <-
     sum_done = sum(task_status == 'done')
   ) %>%
   filter(
-    sum_done == 1
+    sum_done == 1,
+    substring(task_date, 1, 4) != "2014"
   ) %>%
   left_join(
     tasks, by="task_date"
