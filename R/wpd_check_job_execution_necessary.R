@@ -17,8 +17,8 @@ wpd_check_job_execution_necessary <-
 
     # --- check if execution is necessary --------------------------------------
 
-    if( any (task_status$task_status != "waiting") ) {
-      message("none of the tasks is waiting")
+    if( !any (task_status$task_status %in% c("waiting", "error") ) ) {
+      message("none of the tasks is waiting or in error")
 
       # do not execute any other code
       return(FALSE)
@@ -32,7 +32,7 @@ wpd_check_job_execution_necessary <-
     }
 
     if( any (task_status$job_status == "start") ) {
-      message("at least on job has been started for the task")
+      message("at least one job has been started for the task")
 
       # do not execute any other code
       return(FALSE)

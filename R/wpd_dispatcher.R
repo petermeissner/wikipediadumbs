@@ -9,21 +9,41 @@
 wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
 
   # todos
-  if( is.null(file) ){
+  if( class(file) == "function" | is.null(file) ){
     todos <-
       list.files("/data/wpd/todo", full.names = TRUE, recursive = TRUE)
   } else {
     todos <- file
   }
 
-  # jobs run already
-  jobs_run <- basename(wpd_get_query_master("select * from upload_jobs")$return$job_file)
 
   # jobs_open
   if ( retry == FALSE ){
+
+    # jobs run already
+    jobs_run <- basename(wpd_get_query_master("select * from upload_jobs")$return$job_file)
+
+    # filter todo for jobsrun already
     jobs_open <- todos[!(basename(todos) %in% jobs_run)]
+
   } else {
-    jobs_open <- todos
+    jobs_run <- basename(wpd_get_query_master("select * from upload_jobs")$return$job_file)
+
+    iffer <-
+      todos %in%
+      wpd_get_query_master(
+        "
+        SELECT
+          c.job_file
+          FROM upload_tasks a
+          LEFT JOIN upload_task_jobs b ON a.task_id = b.task_id
+          LEFT JOIN upload_jobs c ON b.job_id = c.job_id
+          where job_status != 'done' and job_status != 'start' and task_status != 'done'
+        "
+      )$return$job_file |
+      !(basename(todos) %in% jobs_run)
+
+    jobs_open <- todos[iffer]
   }
 
 
@@ -75,7 +95,7 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
           )
 
         system(system_command)
-        cat("Dispatched: ", jobs_open[1])
+        cat("Dispatched: ", jobs_open[1], "\n")
         jobs_open <- jobs_open[-1]
       }
     }else{
