@@ -121,44 +121,6 @@ options(
     )
 
 
-
-    # ---- get info on jobs and task status ------------------------------------
-
-    execute <-
-      wpd_check_job_execution_necessary(date = date, lang = lang)
-
-    if( execute == TRUE ){
-
-      # do nothing, carry on
-
-    } else {
-
-      # stop function by returning
-      return(NULL)
-    }
-
-
-    # ---- clean upü any old data ----------------------------------------------
-
-    # clean up database before putting in data
-    wpd_get_query(
-      paste0(
-        "delete from page_views_traffic",
-        " where traffic_date = '", date,"' and page_language in ",
-        wpd_sql_values(lang)
-      )
-    )
-
-    wpd_get_queries(
-      queries =
-        paste0(
-          "delete from page_views_", lang,
-          " where page_view_date = '", date, "'"
-        )
-    )
-
-
-
     # ---- register a job ------------------------------------------------------
 
     execute <-
@@ -195,6 +157,28 @@ options(
       )
     job_id <- new_job_res$job_id
 
+
+
+    # clean up database before putting in data
+    wpd_get_query(
+      paste0(
+        "delete from page_views_traffic",
+        " where traffic_date = '", date,"' and page_language in ",
+        wpd_sql_values(lang)
+      )
+    )
+
+    wpd_get_queries(
+      queries =
+        paste0(
+          "delete from page_views_", lang,
+          " where page_view_date = '", date, "'"
+        )
+    )
+
+
+
+    # ---- read through file ---------------------------------------------------
 
     # open file connection
     bz_con <-
