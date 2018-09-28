@@ -5,7 +5,7 @@
 \title{wpd_upload_pageview_counts}
 \usage{
 wpd_upload_pageview_counts(page_name, page_view_count, page_view_date,
-  page_language, conn = NULL)
+  page_language, conn = NULL, upload_type = c("bz2", "gz"))
 }
 \arguments{
 \item{page_name}{character vector of page names}

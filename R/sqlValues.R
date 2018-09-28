@@ -16,6 +16,7 @@ NULL
 #' @return an object of type SQL
 #'
 #' @export
+#' @import DBI
 #'
 #' @examples
 #'
@@ -37,6 +38,7 @@ setGeneric(
 
 #' @rdname hidden_aliases
 #' @export
+#' @import DBI
 setMethod(
   f          = "sqlValues",
   signature  = signature("DBIConnection", "vector"),

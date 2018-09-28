@@ -22,6 +22,10 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
   }
 
 
+  # processing .gz files
+  todos <- unique(gsub("-\\d{6}\\.gz", "-.*.gz", todos))
+
+
   # jobs_open
   if ( retry == FALSE ){
 
@@ -68,7 +72,6 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
     cat("Nothing dispatched, no jobs to be done")
 
   }else{
-
 
     ps           <- system("ps aux | grep peter", intern = TRUE)
     ps_rscript_n <- length(grep("/usr/lib/R/bin/exec/R", ps, value = TRUE))

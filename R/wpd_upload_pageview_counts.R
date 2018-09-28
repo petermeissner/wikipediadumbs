@@ -15,11 +15,15 @@ wpd_upload_pageview_counts <-
     page_view_count,
     page_view_date,
     page_language,
-    conn = NULL
+    conn        = NULL,
+    upload_type = c("bz2", "gz")
   ) {
 
     # check inputs
     stopifnot(length(page_language) == 1, length(page_view_date) == 1)
+
+    # process inputs
+    upload_type <- upload_type[1]
 
     # connection to wpd database
     if( is.null(conn) ){
@@ -27,9 +31,26 @@ wpd_upload_pageview_counts <-
       on.exit(DBI::dbDisconnect(conn))
     }
 
-    # prepare table names
+    # prepare table name for dict table
     dict_table_name       <- paste0("dict_", page_language)
-    page_views_table_name <- paste0("page_views_", page_language)
+
+
+    # prepare table name for page views table
+    if ( upload_type == "bz2" ){
+
+      page_views_table_name <- paste0("page_views_", page_language)
+
+    } else if ( upload_type == "gz" ) {
+
+      page_views_table_name <-
+        paste0("tmp_page_views_", page_language, "_", gsub("-", "_", page_view_date))
+
+    } else {
+
+      stop("Do not know how to handle this uplaod type.")
+
+    }
+
 
     # prepare sql value list
     sql_values <-

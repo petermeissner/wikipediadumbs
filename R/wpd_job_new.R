@@ -20,7 +20,7 @@ wpd_job_new <-
       !is.null(date),
       !is.null(file),
       !is.null(job_type),
-      file.exists(file)
+      file.exists(file) || length(list.files(path = dirname(file), pattern = basename(file))) > 0
     )
 
     # filter tasks
