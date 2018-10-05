@@ -40,7 +40,8 @@ tasks %>%
   geom_text(data = jobs, aes(x = task_date, y = y, color = job_run_node, label = paste0(job_run_node, "/", task_date)))
 
 
-
+# print missing dates
+missing$task_date %>% unique() %>% sort() %>% as.character()
 
 
 
