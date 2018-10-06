@@ -41,6 +41,7 @@ tasks %>%
 
 
 # print missing dates
+missing <- tasks %>% filter(task_status!="done", task_date >= "2012-01-01")
 missing$task_date %>% unique() %>% sort() %>% as.character()
 
 

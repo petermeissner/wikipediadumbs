@@ -19,5 +19,7 @@ Imports: DBI,
     utf8,
     rlist,
     hms,
-    telegram
+    telegram,
+    future,
+    future.apply
 RoxygenNote: 6.1.0
