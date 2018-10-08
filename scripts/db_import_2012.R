@@ -62,13 +62,15 @@ for(i in seq_along(sql)) wpd_get_query_master(sql[i])
 sql_list <- list()
 for( i in seq_len(nrow(topo)) ){
 
-  if( wpd_nodes[topo$node[i]] == Sys.info()["nodename"]){
+  if( topo$node[i] == "" ){
+    sql <- ""
+  } else if( wpd_nodes[topo$node[i]] == Sys.info()["nodename"]){
     sql <-
       wpd_sql(
         "insert into page_views_%s_%s_import
-          select page_id, page_view_date, sum(page_view_count)
-          from page_views_%s where page_view_date = '%s'::date
-          group by page_id, page_view_date
+        select page_id, page_view_date, sum(page_view_count)
+        from page_views_%s where page_view_date = '%s'::date
+        group by page_id, page_view_date
         ;
         ",
         wpd_languages,
@@ -80,14 +82,14 @@ for( i in seq_len(nrow(topo)) ){
     sql <-
       wpd_sql(
         "insert into page_views_%s_%s_import
-    select page_id, page_view_date, sum(page_view_count) from
-    dblink(
-      'dbname=wikipedia port=5432 host=%s user=%s password=%s',
-      'select * from page_views_%s where page_view_date = ''%s''::date')
-      as dings(page_id int4, page_view_date date, page_view_count int4)
-    group by page_id, page_view_date
-    ;
-    ",
+        select page_id, page_view_date, sum(page_view_count) from
+        dblink(
+        'dbname=wikipedia port=5432 host=%s user=%s password=%s',
+        'select * from page_views_%s where page_view_date = ''%s''::date')
+        as dings(page_id int4, page_view_date date, page_view_count int4)
+        group by page_id, page_view_date
+        ;
+        ",
         wpd_languages,
         import_date,
         wpd_nodes[topo$node[i]],
@@ -131,9 +133,9 @@ results <-
             wpd_get_query_master(
               wpd_sql(
                 "select * from import_jobs
-          where page_view_date ='%s'::date and
-          page_view_lang = '%s'
-          ",
+                where page_view_date ='%s'::date and
+                page_view_lang = '%s'
+                ",
                 df$page_view_date,
                 df$page_view_lang
               )
@@ -143,7 +145,7 @@ results <-
             wpd_get_query_master(
               wpd_sql(
                 "insert into import_jobs (page_view_lang, page_view_date)
-            values ('%s', '%s')",
+                values ('%s', '%s')",
                 df$page_view_lang,
                 df$page_view_date
               )
@@ -152,9 +154,9 @@ results <-
               wpd_get_query_master(
                 wpd_sql(
                   "select * from import_jobs
-          where page_view_date ='%s'::date and
-          page_view_lang = '%s'
-          ",
+                  where page_view_date ='%s'::date and
+                  page_view_lang = '%s'
+                  ",
                   df$page_view_date,
                   df$page_view_lang
                 )
@@ -226,6 +228,11 @@ results <-
     )
   )
 results
+
+
+
+
+
 
 
 

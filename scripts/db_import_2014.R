@@ -55,14 +55,16 @@ sql <-
     ",
     wpd_languages,
     import_date
-    )
+  )
 for(i in seq_along(sql)) wpd_get_query_master(sql[i])
 
 
 sql_list <- list()
 for( i in seq_len(nrow(topo)) ){
 
-  if( wpd_nodes[topo$node[i]] == Sys.info()["nodename"]){
+  if( topo$node[i] == "" ){
+    sql <- ""
+  } else if( wpd_nodes[topo$node[i]] == Sys.info()["nodename"]){
     sql <-
       wpd_sql(
         "insert into page_views_%s_%s_import
@@ -223,8 +225,8 @@ results <-
           }
 
         }
-                )
-              )
+    )
+  )
 results
 
 
