@@ -17,7 +17,7 @@ ggplot(
     )
   ) +
   geom_point(size = 0.1)+
-  geom_smooth(se = FALSE)+
+  geom_smooth(se = FALSE, method = "loess", span = 0.3) +
   theme_bw()+
   ylim(c(0,1000))
 
