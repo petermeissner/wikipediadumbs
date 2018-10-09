@@ -8,7 +8,7 @@ library(future.apply)
 
 
 # options
-plan("multisession", workers = availableCores())
+plan("multisession", workers = 3)
 import_date <- "2015"
 
 

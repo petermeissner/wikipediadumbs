@@ -2,6 +2,7 @@
 
 S3method("+",SQL)
 export("%>%")
+export(dbt_hlp_progress)
 export(sqlValues)
 export(wpd_batch_execute)
 export(wpd_check_job_execution_necessary)
