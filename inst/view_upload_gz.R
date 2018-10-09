@@ -193,43 +193,51 @@ options(
 
     # ---- read through file ---------------------------------------------------
     progress <- 0
+    n_lines  <- 100000
 
     for ( i in seq_along(files) ){
 
       # read in text from file
-      f_con <- file(files[i], "rb")
-      f     <- readLines(gzcon(f_con))
-      close(f_con)
+      f_con <- gzcon(file(files[i], "rb"))
+      f     <- readLines(f_con, n = n_lines)
 
-      # transform to list of data.tables
-      f_df_list <- wpd_dump_lines_hourly_to_df_list(f)
 
-      res <-
-        lapply(
-          X   = f_df_list,
-          FUN =
-            function(df){
-              wpd_upload_pageview_counts(
-                page_name       = utf8_encode(df$page_name),
-                page_view_count = df$page_view_count,
-                page_view_date  = date,
-                page_language   = df$lang[1],
-                upload_type     = "gz"
-              )
-            }
+      # read more from file
+      while ( length(f) > 0 ) {
+        # transform to list of data.tables
+        f_df_list <- wpd_dump_lines_hourly_to_df_list(f)
+
+        res <-
+          lapply(
+            X   = f_df_list,
+            FUN =
+              function(df){
+                wpd_upload_pageview_counts(
+                  page_name       = utf8_encode(df$page_name),
+                  page_view_count = df$page_view_count,
+                  page_view_date  = date,
+                  page_language   = df$lang[1],
+                  upload_type     = "gz"
+                )
+              }
+          )
+
+        # log progress
+        progress <- progress + length(f)
+
+        wpd_job_log(
+          date       = date,
+          lang       = lang,
+          file       = file,
+          start_time = start_time,
+          progress   = progress,
+          job_id     = job_id
         )
 
-      # log progress
-      progress <- progress + length(f)
+        f     <- readLines(f_con, n = n_lines)
+      }
 
-      wpd_job_log(
-        date       = date,
-        lang       = lang,
-        file       = file,
-        start_time = start_time,
-        progress   = progress,
-        job_id     = job_id
-      )
+      close(f_con)
     }
 
     #---- aggregate  -----------------------------------------------------------
