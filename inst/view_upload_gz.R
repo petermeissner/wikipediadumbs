@@ -58,7 +58,7 @@ options(
 
       if ( exists("job_id") ){
 
-        cat( "\n-----------------\n\n", job_id, "\n----------------\n")
+        cat( "\n-----------------\njob_id:", job_id, "\n-----------------\n")
 
         wpd_job_update(
           job_id      = job_id,
@@ -67,19 +67,26 @@ options(
           job_end_ts  = as.character(Sys.time())
         )
 
+        if ( !interactive() ) {
+          Sys.sleep(4)
+        }
+
       }else{
         job_id <- "unknown"
       }
 
-      wpd_notify(
-        wpd_current_node(), "[", job_id, "]",
-        date, "--",
-        paste(lang, collapse = ", "), "--",
-        paste(readLines(fname), collapse = "\n")
-      )
 
+      if ( !interactive() ) {
 
-      if(!interactive()){q(save = "no")}
+        wpd_notify(
+          wpd_current_node(), "[", job_id, "]",
+          date, "--",
+          paste(lang, collapse = ", "), "--",
+          paste(readLines(fname), collapse = "\n")
+        )
+
+        q(save = "no")
+      }
 
     }
 )
@@ -122,8 +129,7 @@ options(
 
     # ---- register a job ------------------------------------------------------
 
-    execute <-
-      wpd_check_job_execution_necessary(date = date, lang = lang)
+    (execute <- wpd_check_job_execution_necessary(date = date, lang = lang))
 
     if( execute == TRUE ){
 

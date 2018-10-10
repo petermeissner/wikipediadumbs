@@ -8,6 +8,10 @@
 #'
 wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
 
+  cat_log <- function(...){
+    cat(as.character(Sys.time()),"--", ...)
+  }
+
   # todos
   if( class(file) == "function" | is.null(file) ){
     todos <-
@@ -18,7 +22,13 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
         pattern    = "(.+?)((\\.gz)|(.bz2))$"
       )
   } else {
-    todos <- file
+    files <-
+      list.files(
+        path       = dirname(file),
+        pattern    = basename(file),
+        full.names = TRUE
+      )
+    todos <- files
   }
 
 
@@ -69,7 +79,7 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
 
     }
 
-    cat("Nothing dispatched, no jobs to be done")
+    cat_log("Nothing dispatched, no jobs to be done")
 
   }else{
 
@@ -103,11 +113,11 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
           )
 
         system(system_command)
-        cat("Dispatched: ", jobs_open[1], "\n")
+        cat_log("Dispatched: ", jobs_open[1], "\n")
         jobs_open <- jobs_open[-1]
       }
     }else{
-      cat("Nothing dispatched, no spots open")
+      cat_log("Nothing dispatched, no spots open")
     }
   }
 }
