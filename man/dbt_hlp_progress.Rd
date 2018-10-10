@@ -21,4 +21,5 @@ dbt_hlp_progress
 
 dbt_hlp_progress(1)
 dbt_hlp_progress(3, 10, Sys.time()-10)
+
 }

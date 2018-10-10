@@ -4,13 +4,13 @@
 #' @param ii number of iterations / ... in total
 #' @param start start time
 #'
-#' @return
 #' @export
 #'
 #' @examples
 #'
 #' dbt_hlp_progress(1)
 #' dbt_hlp_progress(3, 10, Sys.time()-10)
+#'
 dbt_hlp_progress <-
   function(i = NULL, ii = NULL, start = NULL, redraw = FALSE, now = Sys.time()){
     if(redraw){
