@@ -27,70 +27,74 @@ if( class(file) =="function" ){
 }
 cat("\n\n --", { if( is.null(file) ){"file: NULL"} else {file} }, "-- \n\n ")
 
-
+date   <- ""
+lang   <- ""
+job_id <- "unknown"
 
 
 
 #### error handler #############################################################
-options(
-  "error" =
-    function(){
-      if ( !exists("date") | class(date) == "function" ){
-        date <- ""
-      }
+error_function <-
+  function(){
+    if ( !exists("date") | class(date) == "function" ){
+      date <- ""
+    }
 
-      if(!exists("lang")){
-        lang <- ""
-      }
+    if(!exists("lang")){
+      lang <- ""
+    }
 
+    em    <- geterrmessage()
+    fname <- paste0("Rscript_", paste(date, paste(lang, collapse = "_"), sep = "_"), ".error")
+    sink(file = fname)
+    cat( "\n-----------------\n\n", file, "\n\n----------------\n")
+    cat( "\n-----------------\n\n", em, "\n----------------\n")
+    traceback(2)
+    sink()
 
-      em    <- geterrmessage()
-      fname <- paste0("Rscript_", paste(date, paste(lang, collapse = "_"), sep = "_"), ".error")
-      sink(file = fname)
-      cat( "\n-----------------\n\n", em, "\n----------------\n")
-      traceback(2)
-      sink()
-
-      cat( "\n-----------------\n\n", em, "\n----------------\n")
-      cat(readLines(fname), sep = "\n")
-
+    cat( "\n-----------------\n\n", em, "\n----------------\n")
+    cat(readLines(fname), sep = "\n")
 
 
-      if ( exists("job_id") ){
 
-        cat( "\n-----------------\njob_id:", job_id, "\n-----------------\n")
+    if ( exists("job_id") ){
 
-        wpd_job_update(
-          job_id      = job_id,
-          job_status  = "error",
-          job_comment = paste(readLines(fname), collapse = "\n"),
-          job_end_ts  = as.character(Sys.time())
-        )
+      cat( "\n-----------------\njob_id:", job_id, "\n-----------------\n")
 
-        if ( !interactive() ) {
-          Sys.sleep(4)
-        }
-
-      }else{
-        job_id <- "unknown"
-      }
-
+      wpd_job_update(
+        job_id      = job_id,
+        job_status  = "error",
+        job_comment = paste(readLines(fname), collapse = "\n"),
+        job_end_ts  = as.character(Sys.time())
+      )
 
       if ( !interactive() ) {
-
-        wpd_notify(
-          wpd_current_node(), "[", job_id, "]",
-          date, "--",
-          paste(lang, collapse = ", "), "--",
-          paste(readLines(fname), collapse = "\n")
-        )
-
-        q(save = "no")
+        Sys.sleep(4)
       }
 
+    }else{
+      job_id <- "unknown"
+      cat( "\n-----------------\njob_id:", job_id, "\n-----------------\n")
     }
-)
 
+
+    if ( !interactive() ) {
+
+      wpd_notify(
+        wpd_current_node(), "[", job_id, "]",
+        date, "--",
+        file, "--",
+        paste(lang, collapse = ", "), "--",
+        paste(readLines(fname), collapse = "\n")
+      )
+
+      q(save = "no")
+    }
+
+  }
+
+
+options( "error" = error_function )
 
 
 
@@ -99,13 +103,13 @@ options(
 # it is used to be able to 'break' execution without raising an error
 #
 #
-(
+duty_to_do_function <-
   function()
   {
 
 
     # ---- get date and lang ---------------------------------------------------
-    date <-
+    date <<-
       as.character(
         as.Date(
           str_extract(file, "\\d{4}\\d{2}\\d{2}"),
@@ -113,7 +117,7 @@ options(
         )
       )
 
-    lang <- wpd_languages
+    lang <<- wpd_languages
 
 
     # # ---- checks for information completeness ---------------------------------
@@ -154,7 +158,7 @@ options(
             sep = ", "
           )
       )
-    job_id <- new_job_res$job_id
+    job_id <<- new_job_res$job_id
 
 
     # check if all files are available
@@ -297,8 +301,11 @@ options(
 
 
   }
-)()
 #### END : DUTY TO DO FUNCTION
+debug(duty_to_do_function)
+duty_to_do_function()
+
+
 
 
 
