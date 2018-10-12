@@ -1,7 +1,7 @@
 Package: wpd
 Type: Package
 Title: Handling Wikipedia Page View Dumps
-Version: 0.9.2
+Version: 0.9.3
 Date: 2018-09-25
 Author: Who wrote it
 Maintainer: Peter Meissner <retep.meissner@gmail.com>
