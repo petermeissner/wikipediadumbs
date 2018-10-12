@@ -4,7 +4,7 @@
 \alias{wpd_get_time_series}
 \title{wpd_get_time_series}
 \usage{
-wpd_get_time_series(page = NULL, lang = NULL)
+wpd_get_time_series(page = NULL, lang = NULL, regex = NULL)
 }
 \arguments{
 \item{page}{article name}
