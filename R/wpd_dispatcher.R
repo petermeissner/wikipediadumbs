@@ -88,6 +88,12 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
 
     if ( ps_rscript_n <= n_jobs & length(jobs_open) > 0 ){
       while ( ps_rscript_n <= n_jobs  & length(jobs_open) > 0 ){
+        # choose a job at random
+        if ( retry == TRUE ){
+          job_i <- sample(seq_along(jobs_open))[1]
+        } else {
+          job_i <- 1
+        }
 
         # increment counter by one
         ps_rscript_n <- ps_rscript_n + 1
@@ -96,9 +102,9 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
         proto_bz2 <- system.file("view_upload_bz2.R", package = "wpd")
         proto_gz  <- system.file("view_upload_gz.R",  package = "wpd")
 
-        if ( grepl("bz2$", jobs_open[1]) ){
+        if ( grepl("bz2$", jobs_open[job_i]) ){
           proto <- proto_bz2
-        } else if ( grepl("gz$", jobs_open[1]) ){
+        } else if ( grepl("gz$", jobs_open[job_i]) ){
           proto <- proto_gz
         } else {
           stop( "Do not know how to handle this job type.")
@@ -108,13 +114,13 @@ wpd_dispatcher <- function(file = NULL, retry = FALSE, n_jobs = 2){
           sprintf(
             'nohup Rscript %s file=%s > %s 2>&1 &',
             proto,
-            jobs_open[1],
-            paste0("/home/peter/", basename(jobs_open[1]), ".error")
+            jobs_open[job_i],
+            paste0("/home/peter/", basename(jobs_open[job_i]), ".error")
           )
 
         system(system_command)
-        cat_log("Dispatched: ", jobs_open[1], "\n")
-        jobs_open <- jobs_open[-1]
+        cat_log("Dispatched: ", jobs_open[job_i], "\n")
+        jobs_open <- jobs_open[-job_i]
       }
     }else{
       cat_log("Nothing dispatched, no spots open")
