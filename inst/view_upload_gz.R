@@ -302,7 +302,6 @@ duty_to_do_function <-
 
   }
 #### END : DUTY TO DO FUNCTION
-debug(duty_to_do_function)
 duty_to_do_function()
 
 
