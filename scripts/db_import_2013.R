@@ -159,7 +159,7 @@ results <-
                 values ('%s', '%s', '%s')",
                 df$page_view_lang,
                 df$page_view_date,
-                "start"
+                "init"
               )
             )
             jobs <-
