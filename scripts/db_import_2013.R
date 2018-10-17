@@ -55,7 +55,7 @@ sql <-
     ",
     wpd_languages,
     import_date
-    )
+  )
 for(i in seq_along(sql)) wpd_get_query_master(sql[i])
 
 
@@ -241,8 +241,8 @@ results <-
           }
 
         }
-                )
-              )
+    )
+  )
 results
 
 
