@@ -55,8 +55,19 @@ sql <-
     ",
     wpd_languages,
     import_date
-  )
+    )
 for(i in seq_along(sql)) wpd_get_query_master(sql[i])
+
+
+wpd_get_query_master(
+  "create table if not exists import_jobs (
+    page_view_lang varchar,
+    page_view_date date,
+    import_status varchar,
+    import_update_ts timestamp default now(),
+    import_start_ts timestamp default now()
+  )"
+)
 
 
 sql_list <- list()
@@ -190,7 +201,9 @@ results <-
 
             wpd_get_query_master(
               wpd_sql(
-                "update import_jobs set import_status = 'start'
+                "update import_jobs
+                  set import_status = 'start',
+                  import_update_ts = now(),
                 where page_view_date = '%s'::date and page_view_lang = '%s'",
                 df$page_view_date,
                 df$page_view_lang
@@ -207,7 +220,8 @@ results <-
 
             wpd_get_query_master(
               wpd_sql(
-                "update import_jobs set import_status = '%s'
+                "update import_jobs set import_status = '%s',
+                  import_update_ts = now(),
                 where page_view_date = '%s'::date and page_view_lang = '%s'",
                 status,
                 df$page_view_date,
@@ -225,9 +239,14 @@ results <-
           }
 
         }
-    )
-  )
+                )
+              )
 results
+
+
+
+
+
 
 
 
