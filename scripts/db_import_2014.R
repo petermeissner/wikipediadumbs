@@ -20,7 +20,14 @@ topology <- wpd_db_topology()
 # filter
 topo <-
   topology %>%
-  #as_data_frame() %>%
+  select(
+    task_date,
+    task_lang,
+    job_status,
+    job_progress,
+    job_run_node,
+    job_end_ts
+  ) %>%
   filter(
     substring(task_date, 1, 4) == import_date
   ) %>%
@@ -28,19 +35,20 @@ topo <-
     task_date,
     task_lang
   ) %>%
-  summarise(
-    ok   = sum(job_status == "done", na.rm = TRUE) > 0,
-    node = job_run_node[job_status == "done"][1]
+  mutate(
+    progress_max = max(job_progress),
+    ts_max       = max(job_end_ts),
+    n            = n()
   ) %>%
-  group_by(
-    task_date
-  ) %>%
-  summarise(
-    ok   = sum(ok, na.rm = TRUE) == length(wpd_languages),
-    node = paste0(unique(sort(node)), collapse = ", ")
+  filter(
+    job_progress == progress_max,
+    ts_max       == ts_max,
+    job_status   == "done"
   )
 
-
+topo <-
+  topo[!duplicated(topo[, c("task_date", "task_lang")]), ] %>%
+  ungroup()
 
 
 
@@ -61,21 +69,21 @@ for(i in seq_along(sql)) wpd_get_query_master(sql[i])
 
 wpd_get_query_master(
   "create table if not exists import_jobs (
-    page_view_lang varchar,
-    page_view_date date,
-    import_status varchar,
-    import_update_ts timestamp default now(),
-    import_start_ts timestamp default now()
-  )"
+  page_view_lang varchar,
+  page_view_date date,
+  import_status varchar,
+  import_update_ts timestamp default now(),
+  import_start_ts timestamp default now()
+)"
 )
 
 
 sql_list <- list()
 for( i in seq_len(nrow(topo)) ){
 
-  if( topo$node[i] == "" ){
+  if( topo$job_run_node[i] == "" ){
     sql <- ""
-  } else if( wpd_nodes[topo$node[i]] == Sys.info()["nodename"]){
+  } else if( wpd_nodes[topo$job_run_node[i]] == Sys.info()["nodename"] ){
     sql <-
       wpd_sql(
         "insert into page_views_%s_%s_import
@@ -84,9 +92,9 @@ for( i in seq_len(nrow(topo)) ){
         group by page_id, page_view_date
         ;
         ",
-        wpd_languages,
+        topo$task_lang[i],
         import_date,
-        wpd_languages,
+        topo$task_lang[i],
         topo$task_date[i]
       )
   }else{
@@ -101,12 +109,12 @@ for( i in seq_len(nrow(topo)) ){
         group by page_id, page_view_date
         ;
         ",
-        wpd_languages,
+        topo$task_lang[i],
         import_date,
-        wpd_nodes[topo$node[i]],
+        wpd_nodes[topo$job_run_node[i]],
         Sys.getenv("wpd_user"),
         Sys.getenv("wpd_password"),
-        wpd_languages,
+        topo$task_lang[i],
         topo$task_date[i]
       )
   }
@@ -114,8 +122,8 @@ for( i in seq_len(nrow(topo)) ){
   sql_list[[ length(sql_list) + 1 ]] <-
     data_frame(
       page_view_date = topo$task_date[i],
-      page_view_lang = wpd_languages,
-      node           = topo$node[i],
+      page_view_lang = topo$task_lang[i],
+      node           = topo$job_run_node[i],
       sql            = sql
     )
 }
@@ -159,7 +167,7 @@ results <-
                 values ('%s', '%s', '%s')",
                 df$page_view_lang,
                 df$page_view_date,
-                "start"
+                "init"
               )
             )
             jobs <-
@@ -203,8 +211,8 @@ results <-
             wpd_get_query_master(
               wpd_sql(
                 "update import_jobs
-                  set import_status = 'start',
-                  import_update_ts = now()
+                set import_status = 'start',
+                import_update_ts = now()
                 where page_view_date = '%s'::date and page_view_lang = '%s'",
                 df$page_view_date,
                 df$page_view_lang
@@ -223,7 +231,7 @@ results <-
             wpd_get_query_master(
               wpd_sql(
                 "update import_jobs set import_status = '%s',
-                  import_update_ts = now()
+                import_update_ts = now()
                 where page_view_date = '%s'::date and page_view_lang = '%s'",
                 status,
                 df$page_view_date,
@@ -241,8 +249,8 @@ results <-
           }
 
         }
-                )
-              )
+            )
+            )
 results
 
 
