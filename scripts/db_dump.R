@@ -6,6 +6,7 @@ conn <- wpd_connect_master()
 
 tables <- dbListTables(conn)
 tables <- tables[grep("^tmp", tables, invert = TRUE)]
+tables <- sample(tables)
 
 
 
