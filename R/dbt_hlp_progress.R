@@ -3,6 +3,9 @@
 #' @param i ith iteration / item / job / query
 #' @param ii number of iterations / ... in total
 #' @param start start time
+#' @param redraw ?
+#' @param now ?
+#' @param m ?
 #'
 #' @export
 #'
@@ -12,7 +15,7 @@
 #' dbt_hlp_progress(3, 10, Sys.time()-10)
 #'
 dbt_hlp_progress <-
-  function(i = NULL, ii = NULL, start = NULL, redraw = FALSE, now = Sys.time()){
+  function(i = NULL, ii = NULL, start = NULL, redraw = FALSE, now = Sys.time(), m = ""){
     if(redraw){
       cat("\r")
     }else{
@@ -44,9 +47,11 @@ dbt_hlp_progress <-
         " |",
         rep("=",   round(percent_done*10)) ,
         rep(".",   round((1-percent_done)*10)) ,
-        "|",
+        "| ",
+        m,
         sep = ""
       )
+    }else{
+      cat(" |", m)
     }
-
   }

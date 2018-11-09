@@ -13,7 +13,7 @@ setwd("/data/wpd/")
 start = Sys.time()
 
 for(i in seq_along(tables)){
-  dbt_hlp_progress(i = i, ii = length(tables), start = start)
+  dbt_hlp_progress(i = i, ii = length(tables), start = start, m = tables[i])
   system(sprintf("pg_dump --data-only --column-inserts -d wikipedia -t %s | gzip > %s.gz", tables[i], tables[i]))
   system(sprintf("pg_dump --schema-only -d wikipedia -t %s > %s.sql", tables[i], tables[i]))
 }

@@ -5,7 +5,7 @@
 \title{dbt_hlp_progress}
 \usage{
 dbt_hlp_progress(i = NULL, ii = NULL, start = NULL, redraw = FALSE,
-  now = Sys.time())
+  now = Sys.time(), m = "")
 }
 \arguments{
 \item{i}{ith iteration / item / job / query}
@@ -13,6 +13,12 @@ dbt_hlp_progress(i = NULL, ii = NULL, start = NULL, redraw = FALSE,
 \item{ii}{number of iterations / ... in total}
 
 \item{start}{start time}
+
+\item{redraw}{?}
+
+\item{now}{?}
+
+\item{m}{?}
 }
 \description{
 dbt_hlp_progress
