@@ -24,11 +24,11 @@ dbt_hlp_progress <-
     cat( as.character(now) )
 
     if( !is.null(i) ){
-      cat(" |", i)
+      cat(" |", format(i, big.mark = ",") )
     }
 
     if( !is.null(ii) ){
-      cat(" /", ii)
+      cat(" /", format(ii, big.mark = ","))
     }
 
     if( !is.null(start) ){

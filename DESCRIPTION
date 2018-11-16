@@ -9,7 +9,8 @@ Description: Handling Wikipedia Page View Dumps.
 License: propriatary
 Encoding: UTF-8
 LazyData: true
-Imports: DBI,
+Imports: 
+    DBI,
     RPostgreSQL,
     stringr,
     magrittr,
@@ -21,5 +22,6 @@ Imports: DBI,
     hms,
     telegram,
     future,
-    future.apply
-RoxygenNote: 6.1.0
+    future.apply,
+    prettyunits
+RoxygenNote: 6.1.1
