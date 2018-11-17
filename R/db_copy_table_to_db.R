@@ -58,6 +58,7 @@ db_copy_table_to_db <-
 
       size          <- nrow(statement_res) + size
       statement_res <- dbFetch(statement_exec, n = batch_size)
+      gc()
     }
 
     cat("\n")
