@@ -41,6 +41,6 @@ dbDisconnect(con_from)
 dbDisconnect(con_to)
 
 
-
+message("done", as.character(Sys.time()))
 
 
