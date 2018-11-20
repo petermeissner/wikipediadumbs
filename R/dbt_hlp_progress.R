@@ -32,7 +32,19 @@ dbt_hlp_progress <-
     }
 
     if( !is.null(start) ){
-      cat(" | elapsed:",as.character(hms::as.hms(round(difftime(now, start, units="sec")))))
+      cat(
+        " | elapsed:",
+        as.character(
+          hms::as.hms(
+            max(
+              1,
+              round(
+                difftime(now, start, units="sec")
+              )
+            )
+          )
+        )
+      )
     }
 
     if( !is.null(start) & !is.null(i) & !is.null(ii)){
@@ -45,8 +57,8 @@ dbt_hlp_progress <-
 
       cat(
         " |",
-        rep("=",   round(percent_done*10)) ,
-        rep(".",   round((1-percent_done)*10)) ,
+        rep("=",   max(0, min(round(percent_done*10), 10)) ) ,
+        rep(".",   max(0, min(round((1-percent_done)*10), 10)) ) ,
         "| ",
         m,
         sep = ""
